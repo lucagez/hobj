@@ -1,2 +1,2 @@
-# megaobj
+# Hobj
 Handy object manipulation tools
