@@ -188,4 +188,38 @@ test('Should count each prop, starting at deepness', (t) => {
   t.is(m._sizeDeep('b', false), 4);
 });
 
-/** */
+/**
+ * KEYS
+ */
+test('Should return every top-level key', (t) => {
+  const m = new MegaObj({ a: 0, b: { c: 0, d: { e: 0 } } });
+  t.is(m._keys().length, 2);
+});
+
+test('Should return every top-level key, starting at deepness', (t) => {
+  const m = new MegaObj({ a: 0, b: { c: 0, d: { e: 0 } } });
+  t.is(m._keys('b.d').length, 1);
+});
+
+/**
+ * ENTRIES
+ */
+test('Should return a key/value array', (t) => {
+  const m = new MegaObj({ a: 0, b: { c: 0 } });
+  const expected = [
+    ['a', 0],
+    ['b', { c: 0 }],
+  ];
+
+  t.deepEqual(m._entries(), expected);
+});
+
+test('Should return a key/value array, starting at deepness', (t) => {
+  const m = new MegaObj({ a: 0, b: { c: 0, d: 0 } });
+  const expected = [
+    ['c', 0],
+    ['d', 0],
+  ];
+
+  t.deepEqual(m._entries('b'), expected);
+});

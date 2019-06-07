@@ -107,7 +107,8 @@ function _keys(start) {
 }
 
 function _entries(start) {
-  return this._keys(start).map(prop => [prop, this.store[prop]]);
+  const store = this.storeSelect(start);
+  return this._keys(start).map(prop => [prop, store[prop]]);
 }
 
 function _clear() {

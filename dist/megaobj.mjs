@@ -154,9 +154,8 @@ function _keys(start) {
 }
 
 function _entries(start) {
-  var this$1 = this;
-
-  return this._keys(start).map(function (prop) { return [prop, this$1.store[prop]]; });
+  var store = this.storeSelect(start);
+  return this._keys(start).map(function (prop) { return [prop, store[prop]]; });
 }
 
 function _clear() {
