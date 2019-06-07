@@ -9,7 +9,9 @@
     while ( len-- ) args[ len ] = arguments[ len ];
 
     return funcs.forEach(function (func) { return func.apply(void 0, args); });
-   }  };
+   }  }; // Coercing input to string to avoid errors when splitting.
+  // NOTE: a js object stringify every property (1 => '1').
+
 
   var split = function (str) { return String(str).split('.'); };
 

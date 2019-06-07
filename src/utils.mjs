@@ -2,6 +2,8 @@
 // Executing every function with the passed value as argument
 const every = funcs => (...args) => funcs.forEach(func => func(...args));
 
+// Coercing input to string to avoid errors when splitting.
+// NOTE: a js object stringify every property (1 => '1').
 const split = str => String(str).split('.');
 
 function storeSelect(start = '') {
