@@ -55,8 +55,8 @@ function _sub(path) {
   );
 }
 
-function _forDeep(start = '', end = true) {
-  const store = start !== '' ? this._get(start) : this.store;
+function _forDeep(start, end = true) {
+  const store = this.storeSelect(start);
   return function (func) {
     if (typeof func !== 'function') throw new TypeError('Func must be a function');
 
@@ -79,32 +79,32 @@ function _forDeep(start = '', end = true) {
   };
 }
 
-function _size(start = '') {
-  const store = start !== '' ? this._get(start) : this.store;
+function _size(start) {
+  const store = this.storeSelect(start);
   return Object.keys(store).length;
 }
 
-function _sizeDeep(start = '', end = true) {
+function _sizeDeep(start, end = true) {
   let c = 0;
   this._forDeep(start, end)(() => c += 1);
   return c;
 }
 
-function _for(start = '', func) {
-  const store = start !== '' ? this._get(start) : this.store;
+function _for(start, func) {
+  const store = this.storeSelect(start);
   for (const prop in store) {
     func(prop);
   }
 }
 
-function _keys() {
-  return Object.keys(this.store);
+function _keys(start) {
+  const store = this.storeSelect(start);
+  return Object.keys(store);
 }
 
-function _entries() {
-  return this._keys().map(prop => [prop, this.store[prop]]);
+function _entries(start) {
+  return this._keys(start).map(prop => [prop, this.store[prop]]);
 }
-
 
 function _clear() {
   this.store = {};

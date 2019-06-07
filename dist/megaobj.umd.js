@@ -13,6 +13,12 @@
 
   var split = function (str) { return String(str).split('.'); };
 
+  function storeSelect(start) {
+    if ( start === void 0 ) start = '';
+
+    return start !== '' ? this._get(start) : this.store;
+  }
+
   function wrapper(method) {
     return function scoped() {
       var this$1 = this;
@@ -91,10 +97,9 @@
   }
 
   function _forDeep(start, end) {
-    if ( start === void 0 ) start = '';
     if ( end === void 0 ) end = true;
 
-    var store = start !== '' ? this._get(start) : this.store;
+    var store = this.storeSelect(start);
     return function (func) {
       if (typeof func !== 'function') { throw new TypeError('Func must be a function'); }
 
@@ -117,14 +122,11 @@
   }
 
   function _size(start) {
-    if ( start === void 0 ) start = '';
-
-    var store = start !== '' ? this._get(start) : this.store;
+    var store = this.storeSelect(start);
     return Object.keys(store).length;
   }
 
   function _sizeDeep(start, end) {
-    if ( start === void 0 ) start = '';
     if ( end === void 0 ) end = true;
 
     var c = 0;
@@ -135,23 +137,22 @@
   }
 
   function _for(start, func) {
-    if ( start === void 0 ) start = '';
-
-    var store = start !== '' ? this._get(start) : this.store;
+    var store = this.storeSelect(start);
 
     for (var prop in store) {
       func(prop);
     }
   }
 
-  function _keys() {
-    return Object.keys(this.store);
+  function _keys(start) {
+    var store = this.storeSelect(start);
+    return Object.keys(store);
   }
 
-  function _entries() {
+  function _entries(start) {
     var this$1 = this;
 
-    return this._keys().map(function (prop) { return [prop, this$1.store[prop]]; });
+    return this._keys(start).map(function (prop) { return [prop, this$1.store[prop]]; });
   }
 
   function _clear() {
@@ -179,6 +180,7 @@
     this._size = _size.bind(this);
     this._sizeDeep = _sizeDeep.bind(this);
     this.methods.forEach(function (method) { return this$1[method] = wrapper(method).bind(this$1); });
+    this.storeSelect = storeSelect.bind(this);
     this.before = on('before').bind(this);
     this.after = on('after').bind(this);
   };

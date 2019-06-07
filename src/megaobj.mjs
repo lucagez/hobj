@@ -1,4 +1,4 @@
-import { wrapper } from './utils';
+import { wrapper, storeSelect } from './utils';
 import {
   on,
   _get,
@@ -40,6 +40,7 @@ export default class MegaObj {
     this.methods
       .forEach(method => this[method] = wrapper(method).bind(this));
 
+    this.storeSelect = storeSelect.bind(this);
     this.before = on('before').bind(this);
     this.after = on('after').bind(this);
   }

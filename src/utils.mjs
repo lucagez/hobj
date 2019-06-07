@@ -4,6 +4,10 @@ const every = funcs => (...args) => funcs.forEach(func => func(...args));
 
 const split = str => String(str).split('.');
 
+function storeSelect(start = '') {
+  return start !== '' ? this._get(start) : this.store;
+}
+
 function wrapper(method) {
   return function scoped(...args) {
     // BEFORE
@@ -25,4 +29,5 @@ export {
   every,
   split,
   wrapper,
+  storeSelect,
 };
