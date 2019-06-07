@@ -157,4 +157,35 @@ test('Should pass current path as argument', (t) => {
   });
 });
 
-test.todo('When starting at deepness => path is relative to starting object => must pass `start + path`')
+/**
+ * SIZE
+ */
+test('Should count top level props', (t) => {
+  const m = new MegaObj({ a: 0, b: 0 });
+  t.is(m._size(), 2);
+});
+
+test('Should count top level props, starting at deepness', (t) => {
+  const m = new MegaObj({ a: 0, b: { c: 0 } });
+  t.is(m._size('b'), 1);
+});
+
+/**
+ * SIZE DEEP
+ */
+test('Should count each end prop', (t) => {
+  const m = new MegaObj({ a: 0, b: { c: 0 } });
+  t.is(m._sizeDeep(), 2);
+});
+
+test('Should count each end prop, starting at deepness', (t) => {
+  const m = new MegaObj({ a: 0, b: { c: 0, d: { e: 0 } } });
+  t.is(m._sizeDeep('b'), 2);
+});
+
+test('Should count each prop, starting at deepness', (t) => {
+  const m = new MegaObj({ a: 0, b: { c: 0, d: { e: 0 } } });
+  t.is(m._sizeDeep('b', false), 4);
+});
+
+/** */
