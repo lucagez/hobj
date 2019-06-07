@@ -92,13 +92,16 @@
 
     props.shift();
     return _set(path, value, obj[first], props);
-  }
+  } // If no path is provided `_sub` acts like a deep clone
+  // for the entire object.
+
 
   function _sub(path) {
-    return JSON.parse(JSON.stringify(this._get(path)));
+    return JSON.parse(JSON.stringify(path ? this._get(path) : this.store));
   }
 
   function _forDeep(start, end) {
+    if ( start === void 0 ) start = '';
     if ( end === void 0 ) end = true;
 
     var store = this.storeSelect(start);
@@ -109,7 +112,7 @@
         if ( acc === void 0 ) acc = [];
 
         if (typeof obj === 'undefined') { return; }
-        var path = acc.join('.');
+        var path = start + acc.join('.');
 
         if (end) {
           if (typeof obj !== 'object') { func(obj, path); }
@@ -138,12 +141,16 @@
     return c;
   }
 
-  function _for(start, func) {
-    var store = this.storeSelect(start);
+  function _for(start) {
+    var this$1 = this;
 
-    for (var prop in store) {
-      func(prop);
-    }
+    return function (func) {
+      var store = this$1.storeSelect(start);
+
+      for (var prop in store) {
+        func(prop);
+      }
+    };
   }
 
   function _keys(start) {
