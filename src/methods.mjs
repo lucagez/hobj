@@ -1,16 +1,5 @@
 import { split } from './utils';
 
-function on(when) {
-  return function scoped(method, func) {
-    const actual = Array.from(
-      this[`${when}Q`].get(method) || [],
-    );
-    const queue = [...actual, func];
-
-    this[`${when}Q`].set(method, queue);
-  };
-}
-
 // Reducing object to final value
 function _get(path) {
   return split(path).reduce((a, b) => a && a[b], this.store);
@@ -115,8 +104,7 @@ function _clear() {
   this.store = {};
 }
 
-export {
-  on,
+export default {
   _get,
   _set,
   _has,

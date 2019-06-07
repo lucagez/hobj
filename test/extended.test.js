@@ -4,13 +4,13 @@
  */
 
 import test from 'ava';
-import MegaObj from '../dist/megaobj';
+import Hobj from '../dist/hobj';
 
 /**
  * CLEAR
  */
 test('Should empty store', (t) => {
-  const m = new MegaObj({ hello: 'world' });
+  const m = new Hobj({ hello: 'world' });
   m._clear();
   t.deepEqual(m.store, {});
 });
@@ -19,7 +19,7 @@ test('Should empty store', (t) => {
  * SUB
  */
 test('Should create a completely new sub-copy', (t) => {
-  const m = new MegaObj({ h: { ello: 'world' } });
+  const m = new Hobj({ h: { ello: 'world' } });
   // This is a deep copy
   const sub = m._sub('h');
   // this is a reference
@@ -28,7 +28,7 @@ test('Should create a completely new sub-copy', (t) => {
 });
 
 test('Should clone the entire object', (t) => {
-  const m = new MegaObj({ h: { ello: 'world' } });
+  const m = new Hobj({ h: { ello: 'world' } });
   // This is a deep copy
   const sub = m._sub();
   t.not(sub, m.store);
@@ -38,7 +38,7 @@ test('Should clone the entire object', (t) => {
  * FOR
  */
 test('Should iterate over each top level prop', (t) => {
-  const m = new MegaObj({
+  const m = new Hobj({
     a: 0,
     b: 1,
     c: 2,
@@ -53,7 +53,7 @@ test('Should iterate over each top level prop', (t) => {
 test('Should iterate over each top level prop starting a defined deepness', (t) => {
   // In this case `b` is specified as staring object => so, the iteration will be
   // for each top-level property starting ad `b` deepnsess level => c, d, e
-  const m = new MegaObj({
+  const m = new Hobj({
     a: 0,
     b: {
       c: 0,
@@ -71,7 +71,7 @@ test('Should iterate over each top level prop starting a defined deepness', (t) 
  * FOR DEEP
  */
 test('Should iterate over each end property in the object, regardless the deepness', (t) => {
-  const m = new MegaObj({
+  const m = new Hobj({
     a: 0,
     b: {
       c: 0,
@@ -87,7 +87,7 @@ test('Should iterate over each end property in the object, regardless the deepne
 });
 
 test('Should iterate over EACH property in the object', (t) => {
-  const m = new MegaObj({
+  const m = new Hobj({
     a: 0,
     b: {
       c: 0,
@@ -103,7 +103,7 @@ test('Should iterate over EACH property in the object', (t) => {
 });
 
 test('Should iterate over each property in the object starting at defined deepness', (t) => {
-  const m = new MegaObj({
+  const m = new Hobj({
     a: 0,
     b: {
       c: 0,
@@ -125,7 +125,7 @@ test('Should iterate over each property in the object starting at defined deepne
 });
 
 test('Should pass current path as argument', (t) => {
-  const m = new MegaObj({
+  const m = new Hobj({
     a: 0,
     b: {
       c: 0,
@@ -161,12 +161,12 @@ test('Should pass current path as argument', (t) => {
  * SIZE
  */
 test('Should count top level props', (t) => {
-  const m = new MegaObj({ a: 0, b: 0 });
+  const m = new Hobj({ a: 0, b: 0 });
   t.is(m._size(), 2);
 });
 
 test('Should count top level props, starting at deepness', (t) => {
-  const m = new MegaObj({ a: 0, b: { c: 0 } });
+  const m = new Hobj({ a: 0, b: { c: 0 } });
   t.is(m._size('b'), 1);
 });
 
@@ -174,17 +174,17 @@ test('Should count top level props, starting at deepness', (t) => {
  * SIZE DEEP
  */
 test('Should count each end prop', (t) => {
-  const m = new MegaObj({ a: 0, b: { c: 0 } });
+  const m = new Hobj({ a: 0, b: { c: 0 } });
   t.is(m._sizeDeep(), 2);
 });
 
 test('Should count each end prop, starting at deepness', (t) => {
-  const m = new MegaObj({ a: 0, b: { c: 0, d: { e: 0 } } });
+  const m = new Hobj({ a: 0, b: { c: 0, d: { e: 0 } } });
   t.is(m._sizeDeep('b'), 2);
 });
 
 test('Should count each prop, starting at deepness', (t) => {
-  const m = new MegaObj({ a: 0, b: { c: 0, d: { e: 0 } } });
+  const m = new Hobj({ a: 0, b: { c: 0, d: { e: 0 } } });
   t.is(m._sizeDeep('b', false), 4);
 });
 
@@ -192,12 +192,12 @@ test('Should count each prop, starting at deepness', (t) => {
  * KEYS
  */
 test('Should return every top-level key', (t) => {
-  const m = new MegaObj({ a: 0, b: { c: 0, d: { e: 0 } } });
+  const m = new Hobj({ a: 0, b: { c: 0, d: { e: 0 } } });
   t.is(m._keys().length, 2);
 });
 
 test('Should return every top-level key, starting at deepness', (t) => {
-  const m = new MegaObj({ a: 0, b: { c: 0, d: { e: 0 } } });
+  const m = new Hobj({ a: 0, b: { c: 0, d: { e: 0 } } });
   t.is(m._keys('b.d').length, 1);
 });
 
@@ -205,7 +205,7 @@ test('Should return every top-level key, starting at deepness', (t) => {
  * ENTRIES
  */
 test('Should return a key/value array', (t) => {
-  const m = new MegaObj({ a: 0, b: { c: 0 } });
+  const m = new Hobj({ a: 0, b: { c: 0 } });
   const expected = [
     ['a', 0],
     ['b', { c: 0 }],
@@ -215,7 +215,7 @@ test('Should return a key/value array', (t) => {
 });
 
 test('Should return a key/value array, starting at deepness', (t) => {
-  const m = new MegaObj({ a: 0, b: { c: 0, d: 0 } });
+  const m = new Hobj({ a: 0, b: { c: 0, d: 0 } });
   const expected = [
     ['c', 0],
     ['d', 0],

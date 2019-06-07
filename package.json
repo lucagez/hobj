@@ -1,11 +1,11 @@
 {
-  "name": "megaobj",
+  "name": "hobj",
   "version": "0.1.0",
   "description": "Handy object manipulation tools",
-  "main": "dist/megaobj.js",
+  "main": "dist/hobj.js",
   "scripts": {
-    "build": "microbundle src/megaobj.mjs --no-sourcemap",
-    "dev": "microbundle watch src/megaobj.mjs --no-compress",
+    "build": "microbundle src/hobj.mjs --no-sourcemap",
+    "dev": "microbundle watch src/hobj.mjs --no-compress",
     "lint": "eslint src/**",
     "lint:fix": "eslint --fix src/**",
     "test": "ava test/**"

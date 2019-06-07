@@ -3,9 +3,9 @@
  */
 
 import test from 'ava';
-import MegaObj from '../dist/megaobj';
+import Hobj from '../dist/hobj';
 
-const m = new MegaObj();
+const m = new Hobj();
 
 let executedBefore = false;
 let executedAfter = false;

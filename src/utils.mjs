@@ -10,6 +10,17 @@ function storeSelect(start = '') {
   return start !== '' ? this._get(start) : this.store;
 }
 
+function on(when) {
+  return function scoped(method, func) {
+    const actual = Array.from(
+      this[`${when}Q`].get(method) || [],
+    );
+    const queue = [...actual, func];
+
+    this[`${when}Q`].set(method, queue);
+  };
+}
+
 function wrapper(method) {
   return function scoped(...args) {
     // BEFORE
@@ -28,6 +39,7 @@ function wrapper(method) {
 }
 
 export {
+  on,
   every,
   split,
   wrapper,

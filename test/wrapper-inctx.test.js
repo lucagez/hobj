@@ -3,10 +3,10 @@
  */
 
 import test from 'ava';
-import MegaObj from '../dist/megaobj';
+import Hobj from '../dist/hobj';
 
 test('Can set and execute before funcs', (t) => {
-  const m = new MegaObj();
+  const m = new Hobj();
   let executed = false;
   m.before('get', () => executed = true);
   m.get('test');
@@ -14,7 +14,7 @@ test('Can set and execute before funcs', (t) => {
 });
 
 test('Can set and execute multiple before funcs', (t) => {
-  const m = new MegaObj();
+  const m = new Hobj();
   const executed = [];
   m.before('get', () => executed.push(1));
   m.before('get', () => executed.push(2));
@@ -23,7 +23,7 @@ test('Can set and execute multiple before funcs', (t) => {
 });
 
 test('Can set and execute after funcs', (t) => {
-  const m = new MegaObj();
+  const m = new Hobj();
   let executed = false;
   m.after('get', () => executed = true);
   m.get('test');
@@ -36,7 +36,7 @@ test('Can set and execute after funcs', (t) => {
 });
 
 test('Can set and execute multiple after funcs', (t) => {
-  const m = new MegaObj();
+  const m = new Hobj();
   const executed = [];
   m.after('get', () => executed.push(1));
   m.after('get', () => executed.push(1));

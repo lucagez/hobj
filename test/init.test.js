@@ -1,11 +1,11 @@
 /**
- * Instantiate every method wehn creating a new megaobj.
+ * Instantiate every method wehn creating a new Hobj.
  */
 
 import test from 'ava';
-import MegaObj from '../dist/megaobj';
+import Hobj from '../dist/hobj';
 
-const m = new MegaObj();
+const m = new Hobj();
 const methods = [
   'get',
   'set',
@@ -47,11 +47,11 @@ test('Should have every non hooked method', (t) => {
 });
 
 test('Should initialize to empty object', (t) => {
-  const n = new MegaObj();
+  const n = new Hobj();
   t.deepEqual(n.store, {});
 });
 
 test('Should initialize to provided object', (t) => {
-  const n = new MegaObj({ hello: 'world' });
+  const n = new Hobj({ hello: 'world' });
   t.assert(n.store.hello === 'world');
 });
