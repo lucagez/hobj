@@ -90,8 +90,9 @@ function _sizeDeep(start = '', end = true) {
   return c;
 }
 
-function _for(func) {
-  for (const prop in this.store) {
+function _for(start = '', func) {
+  const store = start !== '' ? this._get(start) : this.store;
+  for (const prop in store) {
     func(prop);
   }
 }
