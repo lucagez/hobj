@@ -1,1 +1,190 @@
-!function(t,i){"object"==typeof exports&&"undefined"!=typeof module?module.exports=i():"function"==typeof define&&define.amd?define(i):t.megaobj=i()}(this,function(){var t=function(t){return function(){for(var i=[],e=arguments.length;e--;)i[e]=arguments[e];return t.forEach(function(t){return t.apply(void 0,i)})}},i=function(t){return t.split(".")};function e(t){return function(i,e){var n=Array.from(this[t+"Q"].get(i)||[]).concat([e]);this[t+"Q"].set(i,n)}}var n=function(n){var r=this;void 0===n&&(n={}),this.store=n,this.beforeQ=new Map,this.afterQ=new Map,this._get=function(t){return i(t).reduce(function(t,i){return t&&t[i]},this.store)}.bind(this),this._set=function t(e,n,r,o){void 0===r&&(r=this.store),void 0===o&&(o=null);var s=o||i(e),h=s[0];if(r)return void 0===r[h]&&(r[h]={},1===s.length)?(r[h]=n,this.store):(s.shift(),t(e,n,r[h],s))}.bind(this),this._has=function(t){return void 0!==this._get(t)}.bind(this),this._delete=function t(e,n,r){void 0===n&&(n=this.store),void 0===r&&(r=null);var o=r||i(e),s=o[0];return void 0!==n[s]&&(1===o.length?(delete n[s],!0):(o.shift(),t(e,n[s],o)))}.bind(this),this._clear=function(){this.store={}}.bind(this),this._sub=function(t){return JSON.parse(JSON.stringify(this._get(t)))}.bind(this),this._for=function(t){for(var i in this.store)t(i)}.bind(this),this._keys=function(){return Object.keys(this.store)}.bind(this),this._entries=function(){var t=this;return this._keys().map(function(i){return[i,t.store[i]]})}.bind(this),this._forDeep=function(t,i){void 0===t&&(t=""),void 0===i&&(i=!0);var e=""!==t?this._get(t):this.store;return function(t){if("function"!=typeof t)throw new Error("Func must be a function");!function e(n,r){if(void 0===r&&(r=[]),void 0!==n){var o=r.join(".");return i?"object"!=typeof n&&t(n,o):t(n,o),Object.keys(n).map(function(t){return e(n[t],r.concat([t]))})}}(e)}}.bind(this),this._size=function(t){void 0===t&&(t="");var i=""!==t?this._get(t):this.store;return Object.keys(i).length}.bind(this),this._sizeDeep=function(t,i){void 0===t&&(t=""),void 0===i&&(i=!0);var e=0;return this._forDeep(t,i)(function(){return e+=1}),e}.bind(this),this.methods.forEach(function(i){return r[i]=function(i){return function(){for(var e,n=this,r=[],o=arguments.length;o--;)r[o]=arguments[o];return t(this.beforeQ.get(i)||[]).apply(void 0,r),Promise.resolve().then(function(){return t(n.afterQ.get(i)||[]).apply(void 0,r)}),(e=this)["_"+i].apply(e,r)}}(i).bind(r)}),this.before=e("before").bind(this),this.after=e("after").bind(this)};return n.prototype.methods=["get","set","has","delete","clear","sub","for","keys","size","sizeDeep","entries","forDeep"],n});
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.megaobj = factory());
+}(this, (function () {
+  // Executing every function with the passed value as argument
+  var every = function (funcs) { return function () {
+    var args = [], len = arguments.length;
+    while ( len-- ) args[ len ] = arguments[ len ];
+
+    return funcs.forEach(function (func) { return func.apply(void 0, args); });
+   }  };
+
+  var split = function (str) { return String(str).split('.'); };
+
+  function wrapper(method) {
+    return function scoped() {
+      var this$1 = this;
+      var ref;
+
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+      // BEFORE
+      every(this.beforeQ.get(method) || []).apply(void 0, args); // AFTER
+      // (microtask executed on nextTick)
+      // NOTE: using Promise for keeping browser compatibility.
+
+      Promise.resolve().then(function () { return every(this$1.afterQ.get(method) || []).apply(void 0, args); }); // MIDDLE
+
+      return (ref = this)[("_" + method)].apply(ref, args);
+    };
+  }
+
+  function on(when) {
+    return function scoped(method, func) {
+      var actual = Array.from(this[(when + "Q")].get(method) || []);
+      var queue = actual.concat( [func]);
+      this[(when + "Q")].set(method, queue);
+    };
+  } // Reducing object to final value
+
+
+  function _get(path) {
+    return split(path).reduce(function (a, b) { return a && a[b]; }, this.store);
+  }
+
+  function _has(path) {
+    return typeof this._get(path) !== 'undefined';
+  }
+
+  function _delete(path, obj, acc) {
+    if ( obj === void 0 ) obj = this.store;
+    if ( acc === void 0 ) acc = null;
+
+    var props = acc || split(path);
+    var first = props[0];
+    if (typeof obj[first] === 'undefined') { return false; }
+
+    if (props.length === 1) {
+      delete obj[first];
+      return true;
+    }
+
+    props.shift();
+    return _delete(path, obj[first], props);
+  }
+
+  function _set(path, value, obj, acc) {
+    if ( obj === void 0 ) obj = this.store;
+    if ( acc === void 0 ) acc = null;
+
+    var props = acc || split(path);
+    var first = props[0];
+    if (!obj) { return; }
+
+    if (typeof obj[first] === 'undefined') {
+      obj[first] = {};
+
+      if (props.length === 1) {
+        obj[first] = value;
+        return this.store;
+      }
+    }
+
+    props.shift();
+    return _set(path, value, obj[first], props);
+  }
+
+  function _sub(path) {
+    return JSON.parse(JSON.stringify(this._get(path)));
+  }
+
+  function _forDeep(start, end) {
+    if ( start === void 0 ) start = '';
+    if ( end === void 0 ) end = true;
+
+    var store = start !== '' ? this._get(start) : this.store;
+    return function (func) {
+      if (typeof func !== 'function') { throw new TypeError('Func must be a function'); }
+
+      (function scoped(obj, acc) {
+        if ( acc === void 0 ) acc = [];
+
+        if (typeof obj === 'undefined') { return; }
+        var path = acc.join('.');
+
+        if (end) {
+          if (typeof obj !== 'object') { func(obj, path); }
+        } else { func(obj, path); } // Recursively going deeper.
+        // NOTE: While going deeper, the current prop is pushed into the accumulator
+        // to keep track of the position inside of the object.
+
+
+        return Object.keys(obj).map(function (prop) { return scoped(obj[prop], acc.concat( [prop])); });
+      })(store);
+    };
+  }
+
+  function _size(start) {
+    if ( start === void 0 ) start = '';
+
+    var store = start !== '' ? this._get(start) : this.store;
+    return Object.keys(store).length;
+  }
+
+  function _sizeDeep(start, end) {
+    if ( start === void 0 ) start = '';
+    if ( end === void 0 ) end = true;
+
+    var c = 0;
+
+    this._forDeep(start, end)(function () { return c += 1; });
+
+    return c;
+  }
+
+  function _for(start, func) {
+    if ( start === void 0 ) start = '';
+
+    var store = start !== '' ? this._get(start) : this.store;
+
+    for (var prop in store) {
+      func(prop);
+    }
+  }
+
+  function _keys() {
+    return Object.keys(this.store);
+  }
+
+  function _entries() {
+    var this$1 = this;
+
+    return this._keys().map(function (prop) { return [prop, this$1.store[prop]]; });
+  }
+
+  function _clear() {
+    this.store = {};
+  }
+
+  var MegaObj = function MegaObj(init) {
+    var this$1 = this;
+    if ( init === void 0 ) init = {};
+
+    this.store = init; // Storing the queues to be executed before and after each method
+
+    this.beforeQ = new Map();
+    this.afterQ = new Map();
+    this._get = _get.bind(this);
+    this._set = _set.bind(this);
+    this._has = _has.bind(this);
+    this._delete = _delete.bind(this);
+    this._clear = _clear.bind(this);
+    this._sub = _sub.bind(this);
+    this._for = _for.bind(this);
+    this._keys = _keys.bind(this);
+    this._entries = _entries.bind(this);
+    this._forDeep = _forDeep.bind(this);
+    this._size = _size.bind(this);
+    this._sizeDeep = _sizeDeep.bind(this);
+    this.methods.forEach(function (method) { return this$1[method] = wrapper(method).bind(this$1); });
+    this.before = on('before').bind(this);
+    this.after = on('after').bind(this);
+  };
+  MegaObj.prototype.methods = ['get', 'set', 'has', 'delete', 'clear', 'sub', 'for', 'keys', 'size', 'sizeDeep', 'entries', 'forDeep'];
+
+  return MegaObj;
+
+})));
+//# sourceMappingURL=megaobj.umd.js.map

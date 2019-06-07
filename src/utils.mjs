@@ -2,7 +2,7 @@
 // Executing every function with the passed value as argument
 const every = funcs => (...args) => funcs.forEach(func => func(...args));
 
-const split = str => str.split('.');
+const split = str => String(str).split('.');
 
 function wrapper(method) {
   return function scoped(...args) {

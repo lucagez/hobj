@@ -58,7 +58,7 @@ function _sub(path) {
 function _forDeep(start = '', end = true) {
   const store = start !== '' ? this._get(start) : this.store;
   return function (func) {
-    if (typeof func !== 'function') throw new Error('Func must be a function');
+    if (typeof func !== 'function') throw new TypeError('Func must be a function');
 
     (function scoped(obj, acc = []) {
       if (typeof obj === 'undefined') return;
