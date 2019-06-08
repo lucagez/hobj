@@ -483,3 +483,9 @@ Clear the store => initialize it to empty object.
 `.clear` does not accepts any argument.
 
 **RETURNS:** `undefined`
+
+# License
+
+MIT.
+
+Author: [Luca Gesmundo]('https://github.com/lucagez')
