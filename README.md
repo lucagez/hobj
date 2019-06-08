@@ -280,7 +280,7 @@ Delete (nested) property.
 ## sub / _sub
 
 ```bash
-obj.sub(path)
+obj.sub([path])
 ```
 Returns a **completely new** object belonging to a (nested) path.
 
@@ -298,7 +298,7 @@ Returns a **completely new** object belonging to a (nested) path.
 ## for / _for
 
 ```bash
-obj.for(path)(callback)
+obj.for([path])(callback)
 ```
 Iterate each top-level property starting at deep level (path)
 If no `path` is provided, the iteration will be at top level.
@@ -345,7 +345,7 @@ obj.for('a')((prop, value) => {
 ## forDeep / _forDeep
 
 ```bash
-obj.forDeep(path, end)(callback)
+obj.forDeep([path[, end]])(callback)
 ```
 Iterate **EACH** property starting at deep level (path).
 If no `path` is provided, the iteration will start at top level.
@@ -401,4 +401,70 @@ obj.forDeep('a')((path, value) => {
 // c, 0
 ```
 
+## size / _size
 
+```bash
+obj.size([path])
+```
+Returns the number of properties at defined deep level.
+If no path is provided, it will be returned the number of properties at top level.
+
+**RETURNS:** `number`
+
+| param | type   | default   | required |
+|-------|--------|-----------|----------|
+| path  | string | ''        | no       |
+
+## sizeDeep / _sizeDeep
+
+```bash
+obj.sizeDeep([path[, end]])
+```
+Returns the number of **EVERY** property contained in the object at specified deep level.
+The `end` param will define if the number should take into account properties that are objects or only end properties.
+
+**RETURNS:** `number`
+
+| param | type    | default   | required |
+|-------|---------|-----------|----------|
+| path  | string  | ''        | no       |
+| end   | boolean | true      | no       |
+
+
+## keys / _keys
+
+```bash
+obj.keys([path])
+```
+Returns an array containing every top-level property at specified deepness. 
+
+**RETURNS:** `array`
+
+| param | type   | default   | required |
+|-------|--------|-----------|----------|
+| path  | string | ''        | no       |
+
+## entries / _entries
+
+```bash
+obj.entries([path])
+```
+Returns an array with the following structure: [prop, value].
+Created at the specified deepness.
+
+**RETURNS:** `array`
+
+| param | type   | default   | required |
+|-------|--------|-----------|----------|
+| path  | string | ''        | no       |
+
+
+## clear / _clear
+
+```bash
+obj.clear()
+```
+Clear the store => initialize it to empty object.
+`.clear` does not accepts any argument.
+
+**RETURNS:** `undefined`
