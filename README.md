@@ -1,6 +1,14 @@
 # Hobj
 > 🔪 Handy object manipulation tools
 
+# Features
+- `before/after` hooks on each method.
+- `get/set/has/delete` with nested path support.
+- deep iteration.
+- deep clone.
+- deep property count.
+- Everything while keeping direct access to original js object (no constrains on using `Hobj` API for every operation).
+
 # Installation
 
 With NPM:
