@@ -21,7 +21,7 @@ function _delete(path, obj = this.store, acc = null) {
   return _delete(path, obj[first], props);
 }
 
-function _set(path, value, obj = this.store, acc = null) {
+function _set(path, value, obj = this.store, acc = null, ref = this.store) {
   const props = acc || split(path);
   const first = props[0];
   if (!obj) return;
@@ -29,11 +29,11 @@ function _set(path, value, obj = this.store, acc = null) {
     obj[first] = {};
     if (props.length === 1) {
       obj[first] = value;
-      return this.store;
+      return ref;
     }
   }
   props.shift();
-  return _set(path, value, obj[first], props);
+  return _set(path, value, obj[first], props, ref);
 }
 
 // If no path is provided `_sub` acts like a deep clone

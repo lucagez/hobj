@@ -1,1 +1,232 @@
-!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):t.hobj=e()}(this,function(){var t=function(t){return function(){for(var e=[],n=arguments.length;n--;)e[n]=arguments[n];return t.forEach(function(t){return t.apply(void 0,e)})}},e=function(t){return String(t).split(".")};function n(t){return function(e,n){var r=Array.from(this[t+"Q"].get(e)||[]).concat([n]);this[t+"Q"].set(e,r)}}var r={_get:function(t){return e(t).reduce(function(t,e){return t&&t[e]},this.store)},_set:function t(n,r,i,o){void 0===i&&(i=this.store),void 0===o&&(o=null);var s=o||e(n),u=s[0];if(i)return void 0===i[u]&&(i[u]={},1===s.length)?(i[u]=r,this.store):(s.shift(),t(n,r,i[u],s))},_has:function(t){return void 0!==this._get(t)},_delete:function t(n,r,i){void 0===r&&(r=this.store),void 0===i&&(i=null);var o=i||e(n),s=o[0];return void 0!==r[s]&&(1===o.length?(delete r[s],!0):(o.shift(),t(n,r[s],o)))},_clear:function(){this.store={}},_sub:function(t){return JSON.parse(JSON.stringify(t?this._get(t):this.store))},_for:function(t){var e=this;return function(n){var r=e.storeSelect(t);for(var i in r)n(i)}},_keys:function(t){var e=this.storeSelect(t);return Object.keys(e)},_size:function(t){var e=this.storeSelect(t);return Object.keys(e).length},_sizeDeep:function(t,e){void 0===e&&(e=!0);var n=0;return this._forDeep(t,e)(function(){return n+=1}),n},_entries:function(t){var e=this.storeSelect(t);return this._keys(t).map(function(t){return[t,e[t]]})},_forDeep:function(t,e){void 0===t&&(t=""),void 0===e&&(e=!0);var n=this.storeSelect(t);return function(r){if("function"!=typeof r)throw new TypeError("Func must be a function");!function n(i,o){if(void 0===o&&(o=[]),void 0!==i){var s=t+o.join(".");return e?"object"!=typeof i&&r(i,s):r(i,s),Object.keys(i).map(function(t){return n(i[t],o.concat([t]))})}}(n)}}};return function(e){var i=this;void 0===e&&(e={}),this.store=e,this.beforeQ=new Map,this.afterQ=new Map,this.methods=Object.keys(r).map(function(t){return{pure:t,normal:t.replace("_","")}}),this.methods.forEach(function(t){var e=t.pure;return i[e]=r[e].bind(i)}),this.methods.forEach(function(e){var n,r=e.normal;return i[r]=(n=r,function(){for(var e,r=this,i=[],o=arguments.length;o--;)i[o]=arguments[o];return t(this.beforeQ.get(n)||[]).apply(void 0,i),Promise.resolve().then(function(){return t(r.afterQ.get(n)||[]).apply(void 0,i)}),(e=this)["_"+n].apply(e,i)}).bind(i)}),this.storeSelect=function(t){return void 0===t&&(t=""),""!==t?this._get(t):this.store}.bind(this),this.before=n("before").bind(this),this.after=n("after").bind(this)}});
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.hobj = factory());
+}(this, (function () {
+  // Executing every function with the passed value as argument
+  var every = function (funcs) { return function () {
+    var args = [], len = arguments.length;
+    while ( len-- ) args[ len ] = arguments[ len ];
+
+    return funcs.forEach(function (func) { return func.apply(void 0, args); });
+   }  }; // Coercing input to string to avoid errors when splitting.
+  // NOTE: a js object stringify every property (1 => '1').
+
+
+  var split = function (str) { return String(str).split('.'); };
+
+  function storeSelect(start) {
+    if ( start === void 0 ) start = '';
+
+    return start !== '' ? this._get(start) : this.store;
+  }
+
+  function on(when) {
+    return function scoped(method, func) {
+      var actual = Array.from(this[(when + "Q")].get(method) || []);
+      var queue = actual.concat( [func]);
+      this[(when + "Q")].set(method, queue);
+    };
+  }
+
+  function wrapper(method) {
+    return function scoped() {
+      var this$1 = this;
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      // BEFORE
+      every(this.beforeQ.get(method) || []).apply(void 0, args); // AFTER
+      // (microtask executed on nextTick)
+      // NOTE: using Promise for keeping browser compatibility.
+
+      var execution;
+      Promise.resolve() // Passing both the args used for the method invocation and the result of the method
+      .then(function () { return every(this$1.afterQ.get(method) || []).apply(void 0, args.concat( [execution] )); }); // MIDDLE
+
+      return (function () {
+        var ref;
+
+        // Computing the result and saving it in a ariable that will be picked up
+        // during AFTER execution.
+        // NOTE: the wrapper function will return the result before
+        // starting the after queue.
+        var result = (ref = this$1)[("_" + method)].apply(ref, args);
+        execution = result;
+        return result;
+      })();
+    };
+  }
+
+  function _get(path) {
+    return split(path).reduce(function (a, b) { return a && a[b]; }, this.store);
+  }
+
+  function _has(path) {
+    return typeof this._get(path) !== 'undefined';
+  }
+
+  function _delete(path, obj, acc) {
+    if ( obj === void 0 ) obj = this.store;
+    if ( acc === void 0 ) acc = null;
+
+    var props = acc || split(path);
+    var first = props[0];
+    if (typeof obj[first] === 'undefined') { return false; }
+
+    if (props.length === 1) {
+      delete obj[first];
+      return true;
+    }
+
+    props.shift();
+    return _delete(path, obj[first], props);
+  }
+
+  function _set(path, value, obj, acc, ref) {
+    if ( obj === void 0 ) obj = this.store;
+    if ( acc === void 0 ) acc = null;
+    if ( ref === void 0 ) ref = this.store;
+
+    var props = acc || split(path);
+    var first = props[0];
+    if (!obj) { return; }
+
+    if (typeof obj[first] === 'undefined') {
+      obj[first] = {};
+
+      if (props.length === 1) {
+        obj[first] = value;
+        return ref;
+      }
+    }
+
+    props.shift();
+    return _set(path, value, obj[first], props, ref);
+  } // If no path is provided `_sub` acts like a deep clone
+  // for the entire object.
+
+
+  function _sub(path) {
+    return JSON.parse(JSON.stringify(path ? this._get(path) : this.store));
+  }
+
+  function _forDeep(start, end) {
+    if ( start === void 0 ) start = '';
+    if ( end === void 0 ) end = true;
+
+    var store = this.storeSelect(start);
+    return function (func) {
+      if (typeof func !== 'function') { throw new TypeError('Func must be a function'); }
+
+      (function scoped(obj, acc) {
+        if ( acc === void 0 ) acc = [];
+
+        if (typeof obj === 'undefined') { return; }
+        var path = start + acc.join('.');
+
+        if (end) {
+          if (typeof obj !== 'object') { func(obj, path); }
+        } else { func(obj, path); } // Recursively going deeper.
+        // NOTE: While going deeper, the current prop is pushed into the accumulator
+        // to keep track of the position inside of the object.
+
+
+        return Object.keys(obj).map(function (prop) { return scoped(obj[prop], acc.concat( [prop])); });
+      })(store);
+    };
+  }
+
+  function _size(start) {
+    var store = this.storeSelect(start);
+    return Object.keys(store).length;
+  }
+
+  function _sizeDeep(start, end) {
+    if ( end === void 0 ) end = true;
+
+    var c = 0;
+
+    this._forDeep(start, end)(function () { return c += 1; });
+
+    return c;
+  }
+
+  function _for(start) {
+    var this$1 = this;
+
+    return function (func) {
+      var store = this$1.storeSelect(start);
+
+      for (var prop in store) {
+        func(prop);
+      }
+    };
+  }
+
+  function _keys(start) {
+    var store = this.storeSelect(start);
+    return Object.keys(store);
+  }
+
+  function _entries(start) {
+    var store = this.storeSelect(start);
+    return this._keys(start).map(function (prop) { return [prop, store[prop]]; });
+  }
+
+  function _clear() {
+    this.store = {};
+  }
+
+  var _methods = {
+    _get: _get,
+    _set: _set,
+    _has: _has,
+    _delete: _delete,
+    _clear: _clear,
+    _sub: _sub,
+    _for: _for,
+    _keys: _keys,
+    _size: _size,
+    _sizeDeep: _sizeDeep,
+    _entries: _entries,
+    _forDeep: _forDeep
+  };
+
+  var Hobj = function Hobj(init) {
+    var this$1 = this;
+    if ( init === void 0 ) init = {};
+
+    this.store = init; // Storing the queues to be executed before and after each method
+
+    this.beforeQ = new Map();
+    this.afterQ = new Map(); // There are two version of every method.
+
+    this.methods = Object.keys(_methods).map(function (pure) { return ({
+      pure: pure,
+      normal: pure.replace('_', '')
+    }); }); // - Normal version `method` => is ALWAYS hooked.
+    // before/after queue will be executed when invoking a normal method.
+    // - Pure version `_method` => Pure method. No hooks.
+    // Setting pure methods
+
+    this.methods.forEach(function (ref) {
+      var pure = ref.pure;
+
+      return this$1[pure] = _methods[pure].bind(this$1);
+    }); // Setting hooked (normal) version.
+
+    this.methods.forEach(function (ref) {
+      var normal = ref.normal;
+
+      return this$1[normal] = wrapper(normal).bind(this$1);
+    });
+    this.storeSelect = storeSelect.bind(this);
+    this.before = on('before').bind(this);
+    this.after = on('after').bind(this);
+  };
+
+  return Hobj;
+
+})));
+//# sourceMappingURL=hobj.umd.js.map

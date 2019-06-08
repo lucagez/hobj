@@ -29,12 +29,23 @@ function wrapper(method) {
     // AFTER
     // (microtask executed on nextTick)
     // NOTE: using Promise for keeping browser compatibility.
+    let execution;
     Promise
       .resolve()
-      .then(() => every(this.afterQ.get(method) || [])(...args));
+      // Passing both the args used for the method invocation and the result of the method
+      .then(() => every(this.afterQ.get(method) || [])(...args, execution));
 
     // MIDDLE
-    return this[`_${method}`](...args);
+    return (() => {
+      // Computing the result and saving it in a ariable that will be picked up
+      // during AFTER execution.
+
+      // NOTE: the wrapper function will return the result before
+      // starting the after queue.
+      const result = this[`_${method}`](...args);
+      execution = result;
+      return result;
+    })();
   };
 }
 

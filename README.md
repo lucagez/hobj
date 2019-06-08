@@ -73,6 +73,27 @@ For each `Hobj` method there are two variations:
 - Normal => obj.[method] => ALWAYS executes before/after hooks.
 - Pure => obj.[_method] => Pure method. No hooks.
 
+**NOTE:** Normal methods can be used also if hooks are not defined.
+
+```javascript
+const obj = new Hobj();
+
+obj.before('set', () => console.log('Setting'));
+
+// NORMAL
+obj.set('a.b', 'c'); 
+
+// Setting
+// { a: { b: 'c' } }
+
+
+// PURE => no hooks are invoked
+obj._set('d', 'e');
+
+// { a: { b: 'c' }, d: 'e' }
+
+```
+
 ## Defining hooks
 
 Hooks can be defined calling on a `Hobj` instance a before/after method.
@@ -119,7 +140,7 @@ obj.set('a', 'b');
 // Success 🎉
 ```
 
-Every hooked function will be invoked with the exact same arguments as the inoked method.
+Every `before` function will be invoked with the exact same arguments as the invoked method.
 
 ```javascript
 const obj = new Hobj();
@@ -147,4 +168,28 @@ obj.has('a');
 // Checking if a is in obj
 // TRUE
 ```
+
+Every `after` function will be invoked with arguments used on the invoked method PLUS the result of the actual invoked method.
+
+```javascript
+const obj = new Hobj();
+
+// Hooked function will be invoked with TWO arguments
+// as the `set` method accepts TWO arguments.
+obj.before('set', (prop, value) => {
+  console.log(`Setting ${prop} equal to ${value}`);
+});
+
+obj.after('set', (prop, value, result) => {
+  console.log('The object is now', result);
+});
+
+obj.set('a', 'b');
+
+// Setting a equal to b
+// [Actually setting the property]
+// The object is now { a: 'b' }
+
+```
+
 
