@@ -10,7 +10,7 @@
     "lint:fix": "eslint --fix src/**",
     "test": "ava test/**"
   },
-  "keywords": [],
+  "keywords": ["object manipulation", "dot prop", "nested properties", "dot notation", "hooks", "object", "nested", "path"],
   "author": "Luca Gesmundo <lucagesmundo@yahoo.it>",
   "license": "MIT",
   "devDependencies": {
