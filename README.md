@@ -69,7 +69,7 @@ obj.store = {
 
 ## Paths
 
-`Hobj` supports nested path with dot-notation.
+**Every** `Hobj` method that take a `path` as argument supports dot-notation.
 
 **e.g.** 
 ```javascript
@@ -225,6 +225,73 @@ obj.store
 ```bash
 obj.has(path)
 ```
-Checks if a (nested) path exists in the object 
+Checks if a (nested) path exists in the object.
 
+**RETURNS:** `true/false`
+
+| param | type   | default   | required |
+|-------|--------|-----------|----------|
+| path  | string | undefined | no       |
+
+## get / _get
+
+```bash
+obj.get(path)
+```
+Returns object belonging to a (nested) path.
+
+**RETURNS:**
+- `object` if a path is provided
+- `undefined` if the provided path does not exists
+
+| param | type   | default   | required |
+|-------|--------|-----------|----------|
+| path  | string | undefined | no       |
+
+
+## set / _set
+
+```bash
+obj.set(path, value)
+```
+Set property at (nested) path.
+
+**RETURNS:** `store`
+
+| param | type   | default   | required |
+|-------|--------|-----------|----------|
+| path  | string | undefined | no       |
+| value | any    | undefined | no       |
+
+
+## delete / _delete
+
+```bash
+obj.delete(path)
+```
+Delete (nested) property.
+
+**RETURNS:** `true/false`. Deletion is successful or not.
+
+| param | type   | default   | required |
+|-------|--------|-----------|----------|
+| path  | string | undefined | no       |
+
+## sub / _sub
+
+```bash
+obj.sub(path)
+```
+Returns a **completely new** object belonging to a (nested) path.
+
+**NOTE:** when retrieving a property using `get`, a reference is returned. Using `sub` you are creating a totally new instance.
+
+**RETURNS:**
+- `object` if a path is provided
+- `undefined` if the provided path does not exists
+- `store` (a cloned instance of) if no path is provided
+
+| param | type   | default   | required |
+|-------|--------|-----------|----------|
+| path  | string | ''        | no       |
 
