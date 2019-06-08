@@ -34,9 +34,117 @@ This will guarantee the order:
 
 ## Init Hobj
 
+You can create a new `Hobj` instance passing an existing js object. 
 ```javascript
 const Hobj = require('hobj');
 
 const obj = new Hobj();
+
+const obj1 = new Hobj({
+  hello: 'world',
+});
+```
+The object that is mutated from `Hobj` methods lives in the `.store` property.
+
+```javascript
+const obj = new Hobj(); // Hobj instance
+
+obj.store // {}
+
+```
+The store property can be manipulated exactly like any other js object.
+**NOTE:** This means that you don't have to rely only on the `Hobj` methods to mutate the object.
+
+```javascript
+const test = { hello: 'world' };
+
+const obj = new Hobj();
+
+// Example operation.
+obj.store = {
+  ...test,
+  a: 'b',
+};
+```
+
+## Calling a method
+
+For each `Hobj` method there are two variations:
+- Normal => obj.[method] => ALWAYS executes before/after hooks.
+- Pure => obj.[_method] => Pure method. No hooks.
+
+## Defining hooks
+
+Hooks can be defined calling on a `Hobj` instance a before/after method.
+Passing the method to hook and a function responsible for that particular hook.
+
+```javascript
+const obj = new Hobj();
+
+// Example using an arbitrary method. You can hook every method defined
+// in the `METHODS` section.
+obj.before('set', () => {
+  console.log('Setting 0');
+});
+
+// You can hook with how many functions you like.
+// They will be executed in insertion order.
+obj.before('set', () => {
+  console.log('Setting 1');
+});
+
+obj.set('a', 'b');
+
+// Setting 0
+// Setting 1
+// [Actually setting the property]
+```
+
+The same is true for `after` hook.
+```javascript
+const obj = new Hobj();
+
+obj.before('set', () => {
+  console.log('Setting');
+});
+
+obj.after('set', () => {
+  console.log('Success 🎉');
+});
+
+obj.set('a', 'b');
+
+// Setting
+// [Actually setting the property]
+// Success 🎉
+```
+
+Every hooked function will be invoked with the exact same arguments as the inoked method.
+
+```javascript
+const obj = new Hobj();
+
+// Hooked function will be invoked with TWO arguments
+// as the `set` method accepts TWO arguments.
+obj.before('set', (prop, value) => {
+  console.log(`Setting ${prop} equal to ${value}`);
+});
+
+obj.set('a', 'b');
+
+// Setting a equal to b
+// [Actually setting the property]
+
+
+// Hooked function will be invoked with ONE argument
+// as the `set` method accepts ONE argument.
+obj.before('has', (value) => {
+  console.log(`Checking if ${value} is in obj`);
+});
+
+obj.has('a');
+
+// Checking if a is in obj
+// TRUE
 ```
 

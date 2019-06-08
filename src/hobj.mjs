@@ -17,7 +17,7 @@ export default class Hobj {
     // - Normal version `method` => is ALWAYS hooked.
     // before/after queue will be executed when invoking a normal method.
 
-    // - Pure version `_method` => Pure method. No hooks.]
+    // - Pure version `_method` => Pure method. No hooks.
 
     // Setting pure methods
     this.methods
