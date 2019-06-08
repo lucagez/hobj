@@ -486,6 +486,6 @@ Clear the store => initialize it to empty object.
 
 # License
 
-MIT.
+**MIT**
 
-Author: [Luca Gesmundo]('https://github.com/lucagez')
+**Author:** [Luca Gesmundo]('https://github.com/lucagez')
