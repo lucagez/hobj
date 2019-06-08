@@ -23,14 +23,14 @@ Without:
 
 # How hooks work
 
-`Hobj` will provide hooks to execute functions before/after a method is executed.
+`Hobj` will provide hooks to execute functions `before/after` a method is executed.
 This is done by executing in order:
 ```bash
 => BEFORE queue
 => fulfilled promise executing AFTER queue
 => called METHOD
 ```
-This way, a micro-task is scheduled thanks to the already fulfilled promise.
+A micro-task is scheduled thanks to the already fulfilled promise.
 So, the AFTER queue will always be executed after the called METHOD. Precisely on `nextTick`.
 
 This will guarantee the order:
@@ -52,7 +52,10 @@ const obj1 = new Hobj({
   hello: 'world',
 });
 ```
-The object that is mutated from `Hobj` methods lives in the `.store` property.
+
+## Store
+
+The object that is mutated thanks to `Hobj` methods lives in the `store` property.
 
 ```javascript
 const obj = new Hobj(); // Hobj instance
@@ -60,7 +63,7 @@ const obj = new Hobj(); // Hobj instance
 obj.store // {}
 
 ```
-The store property can be manipulated exactly like any other js object.
+The `store` property can be manipulated exactly like any other js object.
 **NOTE:** This means that you don't have to rely only on the `Hobj` methods to mutate the object.
 
 ```javascript
@@ -85,7 +88,7 @@ const obj = new Hobj();
 
 obj.store // {}
 
-obj.set('a.b.c', 'd'); // { a: { b: { C: 'd' } } }
+obj.set('a.b.c', 'd'); // { a: { b: { c: 'd' } } }
 
 ```
 
