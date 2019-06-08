@@ -46,18 +46,18 @@ function _sub(path) {
   );
 }
 
-function _forDeep(start = '', end = true) {
-  const store = this.storeSelect(start);
+function _forDeep(path = '', end = true) {
+  const store = this.storeSelect(path);
   return (func) => {
     if (typeof func !== 'function') throw new TypeError('Func must be a function');
 
     (function scoped(obj, acc = []) {
       if (typeof obj === 'undefined') return;
 
-      const path = start + acc.join('.');
+      const usedPath = path + acc.join('.');
       if (end) {
-        if (typeof obj !== 'object') func(obj, path);
-      } else func(obj, path);
+        if (typeof obj !== 'object') func(obj, usedPath);
+      } else func(obj, usedPath);
 
 
       // Recursively going deeper.
@@ -70,34 +70,34 @@ function _forDeep(start = '', end = true) {
   };
 }
 
-function _size(start) {
-  const store = this.storeSelect(start);
+function _size(path) {
+  const store = this.storeSelect(path);
   return Object.keys(store).length;
 }
 
-function _sizeDeep(start, end = true) {
+function _sizeDeep(path, end = true) {
   let c = 0;
-  this._forDeep(start, end)(() => c += 1);
+  this._forDeep(path, end)(() => c += 1);
   return c;
 }
 
-function _for(start) {
+function _for(path) {
   return (func) => {
-    const store = this.storeSelect(start);
+    const store = this.storeSelect(path);
     for (const prop in store) {
-      func(prop);
+      func(prop, store[prop]);
     }
   };
 }
 
-function _keys(start) {
-  const store = this.storeSelect(start);
+function _keys(path) {
+  const store = this.storeSelect(path);
   return Object.keys(store);
 }
 
-function _entries(start) {
-  const store = this.storeSelect(start);
-  return this._keys(start).map(prop => [prop, store[prop]]);
+function _entries(path) {
+  const store = this.storeSelect(path);
+  return this._keys(path).map(prop => [prop, store[prop]]);
 }
 
 function _clear() {

@@ -111,11 +111,11 @@
     return JSON.parse(JSON.stringify(path ? this._get(path) : this.store));
   }
 
-  function _forDeep(start, end) {
-    if ( start === void 0 ) start = '';
+  function _forDeep(path, end) {
+    if ( path === void 0 ) path = '';
     if ( end === void 0 ) end = true;
 
-    var store = this.storeSelect(start);
+    var store = this.storeSelect(path);
     return function (func) {
       if (typeof func !== 'function') { throw new TypeError('Func must be a function'); }
 
@@ -123,11 +123,11 @@
         if ( acc === void 0 ) acc = [];
 
         if (typeof obj === 'undefined') { return; }
-        var path = start + acc.join('.');
+        var usedPath = path + acc.join('.');
 
         if (end) {
-          if (typeof obj !== 'object') { func(obj, path); }
-        } else { func(obj, path); } // Recursively going deeper.
+          if (typeof obj !== 'object') { func(obj, usedPath); }
+        } else { func(obj, usedPath); } // Recursively going deeper.
         // NOTE: While going deeper, the current prop is pushed into the accumulator
         // to keep track of the position inside of the object.
 
@@ -137,41 +137,41 @@
     };
   }
 
-  function _size(start) {
-    var store = this.storeSelect(start);
+  function _size(path) {
+    var store = this.storeSelect(path);
     return Object.keys(store).length;
   }
 
-  function _sizeDeep(start, end) {
+  function _sizeDeep(path, end) {
     if ( end === void 0 ) end = true;
 
     var c = 0;
 
-    this._forDeep(start, end)(function () { return c += 1; });
+    this._forDeep(path, end)(function () { return c += 1; });
 
     return c;
   }
 
-  function _for(start) {
+  function _for(path) {
     var this$1 = this;
 
     return function (func) {
-      var store = this$1.storeSelect(start);
+      var store = this$1.storeSelect(path);
 
       for (var prop in store) {
-        func(prop);
+        func(prop, store[prop]);
       }
     };
   }
 
-  function _keys(start) {
-    var store = this.storeSelect(start);
+  function _keys(path) {
+    var store = this.storeSelect(path);
     return Object.keys(store);
   }
 
-  function _entries(start) {
-    var store = this.storeSelect(start);
-    return this._keys(start).map(function (prop) { return [prop, store[prop]]; });
+  function _entries(path) {
+    var store = this.storeSelect(path);
+    return this._keys(path).map(function (prop) { return [prop, store[prop]]; });
   }
 
   function _clear() {
