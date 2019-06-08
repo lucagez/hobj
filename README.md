@@ -67,6 +67,20 @@ obj.store = {
 };
 ```
 
+## Paths
+
+`Hobj` supports nested path with dot-notation.
+
+**e.g.** 
+```javascript
+const obj = new Hobj();
+
+obj.store // {}
+
+obj.set('a.b.c', 'd'); // { a: { b: { C: 'd' } } }
+
+```
+
 ## Calling a method
 
 For each `Hobj` method there are two variations:
@@ -191,5 +205,26 @@ obj.set('a', 'b');
 // The object is now { a: 'b' }
 
 ```
+
+# METHODS
+
+For each `Hobj` method there are two variations:
+- Normal => obj.[method] => ALWAYS executes before/after hooks.
+- Pure => obj.[_method] => Pure method. No hooks.
+
+## store
+
+Not a method. The object on which the mutations are operated will live inside this property.
+
+```bash
+obj.store
+```
+
+## has / _has
+
+```bash
+obj.has(path)
+```
+Checks if a (nested) path exists in the object 
 
 
