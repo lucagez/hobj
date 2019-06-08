@@ -295,3 +295,110 @@ Returns a **completely new** object belonging to a (nested) path.
 |-------|--------|-----------|----------|
 | path  | string | ''        | no       |
 
+## for / _for
+
+```bash
+obj.for(path)(callback)
+```
+Iterate each top-level property starting at deep level (path)
+If no `path` is provided, the iteration will be at top level.
+
+**RETURNS:** `undefined`.
+
+**for:**
+| param | type   | default   | required |
+|-------|--------|-----------|----------|
+| path  | string | ''        | no       |
+
+**callback:**
+| param | type   |
+|-------|--------|
+| prop  | string |
+| value | any    |
+
+**example:**
+```javascript
+const obj = new Hobj({
+  a: {
+    b: 0,
+    c: 0,
+  },
+  d: 0,
+});
+
+// No `path` provided => iterating at top level
+obj.for()((prop, value) => {
+  console.log(prop, value);
+});
+// a, { b: 0, c: 0 }
+// d, 0
+
+
+// Providing starting `path`
+obj.for('a')((prop, value) => {
+  console.log(prop, value);
+});
+// b, 0
+// c, 0
+```
+
+## forDeep / _forDeep
+
+```bash
+obj.forDeep(path, end)(callback)
+```
+Iterate **EACH** property starting at deep level (path).
+If no `path` is provided, the iteration will start at top level.
+The `end` (end property) let's you define if you want to iterate over properties that have no descendants or not.
+
+**RETURNS:** `undefined`.
+
+**for:**
+| param | type    | default   | required |
+|-------|---------|-----------|----------|
+| path  | string  | ''        | no       |
+| end   | boolean | true      | no       |
+
+**callback:**
+| param | type   |
+|-------|--------|
+| path  | string |
+| value | any    |
+
+**example:**
+```javascript
+const obj = new Hobj({
+  a: {
+    b: 0,
+    c: 0,
+  },
+  d: 0,
+});
+
+// No `path` provided => starting iteration from top level
+obj.forDeep()((path, value) => {
+  console.log(path, value);
+});
+// a.b, 0
+// a.c, 0
+// d, 0
+
+// specifying iteration on **EACH** property.
+obj.forDeep('', false)((path, value) => {
+  console.log(path, value);
+});
+// '', { a: { b: 0, c: 0 }, d: 0 }
+// a, { b: 0, c: 0 }
+// a.b, 0
+// a.c, 0
+// d, 0
+
+// Providing starting `path`
+obj.forDeep('a')((path, value) => {
+  console.log(path, value);
+});
+// b, 0
+// c, 0
+```
+
+

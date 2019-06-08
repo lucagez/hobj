@@ -151,7 +151,7 @@ test('Should pass current path as argument', (t) => {
 
   // Visiting each end property under b => c, f, h, i, e
   const values = [];
-  m._forDeep()((value, path) => values.push(path));
+  m._forDeep()(path => values.push(path));
   values.forEach((path, i) => {
     t.is(path, expected[i]);
   });

@@ -46,6 +46,17 @@ function _sub(path) {
   );
 }
 
+function _for(path) {
+  return (func) => {
+    if (typeof func !== 'function') throw new TypeError('Func must be a function');
+
+    const store = this.storeSelect(path);
+    for (const prop in store) {
+      func(prop, store[prop]);
+    }
+  };
+}
+
 function _forDeep(path = '', end = true) {
   const store = this.storeSelect(path);
   return (func) => {
@@ -56,8 +67,10 @@ function _forDeep(path = '', end = true) {
 
       const usedPath = path + acc.join('.');
       if (end) {
-        if (typeof obj !== 'object') func(obj, usedPath);
-      } else func(obj, usedPath);
+        // An array is actually considered an object.
+        // However, in the context of a js object, is an end property.
+        if (typeof obj !== 'object' || Array.isArray(obj)) func(usedPath, obj);
+      } else func(usedPath, obj);
 
 
       // Recursively going deeper.
@@ -79,15 +92,6 @@ function _sizeDeep(path, end = true) {
   let c = 0;
   this._forDeep(path, end)(() => c += 1);
   return c;
-}
-
-function _for(path) {
-  return (func) => {
-    const store = this.storeSelect(path);
-    for (const prop in store) {
-      func(prop, store[prop]);
-    }
-  };
 }
 
 function _keys(path) {
