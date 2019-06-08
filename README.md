@@ -317,11 +317,13 @@ If no `path` is provided, the iteration will be at top level.
 **RETURNS:** `undefined`.
 
 **for:**
+
 | param | type   | default   | required |
 |-------|--------|-----------|----------|
 | path  | string | ''        | no       |
 
 **callback:**
+
 | param | type   |
 |-------|--------|
 | prop  | string |
@@ -365,12 +367,14 @@ The `end` (end property) let's you define if you want to iterate over properties
 **RETURNS:** `undefined`.
 
 **for:**
+
 | param | type    | default   | required |
 |-------|---------|-----------|----------|
 | path  | string  | ''        | no       |
 | end   | boolean | true      | no       |
 
 **callback:**
+
 | param | type   |
 |-------|--------|
 | path  | string |
