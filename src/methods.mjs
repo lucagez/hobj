@@ -27,10 +27,10 @@ function _set(path, value, obj = this.store, acc = null, ref = this.store) {
   if (!obj) return;
   if (typeof obj[first] === 'undefined') {
     obj[first] = {};
-    if (props.length === 1) {
-      obj[first] = value;
-      return ref;
-    }
+  }
+  if (props.length === 1) {
+    obj[first] = value;
+    return ref;
   }
   props.shift();
   return _set(path, value, obj[first], props, ref);
@@ -73,6 +73,7 @@ function _forDeep(path = '', end = true) {
       } else func(usedPath, obj);
 
 
+      if (typeof obj !== 'object') return;
       // Recursively going deeper.
       // NOTE: While going deeper, the current prop is pushed into the accumulator
       // to keep track of the position inside of the object.
@@ -83,15 +84,11 @@ function _forDeep(path = '', end = true) {
   };
 }
 
-// BUG inside _forDeep
 // DEEP merge utility.
 // Simply iterating and setting.
-// function _merge(ref) {
-//   console.log(ref);
-//   this._forDeep('', true)((path, value) => {
-//     console.log(path, value);
-//   }, ref);
-// }
+function _merge(ref) {
+  this._forDeep('', true)((path, value) => this._set(path, value), ref);
+}
 
 function _size(path) {
   const store = this.storeSelect(path);
@@ -131,5 +128,5 @@ export default {
   _sizeDeep,
   _entries,
   _forDeep,
-  // _merge,
+  _merge,
 };

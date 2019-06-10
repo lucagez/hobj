@@ -89,11 +89,11 @@ function _set(path, value, obj, acc, ref) {
 
   if (typeof obj[first] === 'undefined') {
     obj[first] = {};
+  }
 
-    if (props.length === 1) {
-      obj[first] = value;
-      return ref;
-    }
+  if (props.length === 1) {
+    obj[first] = value;
+    return ref;
   }
 
   props.shift();
@@ -137,24 +137,24 @@ function _forDeep(path, end) {
         // An array is actually considered an object.
         // However, in the context of a js object, is an end property.
         if (typeof obj !== 'object' || Array.isArray(obj)) { func(usedPath, obj); }
-      } else { func(usedPath, obj); } // Recursively going deeper.
+      } else { func(usedPath, obj); }
+
+      if (typeof obj !== 'object') { return; } // Recursively going deeper.
       // NOTE: While going deeper, the current prop is pushed into the accumulator
       // to keep track of the position inside of the object.
-
 
       return Object.keys(obj).map(function (prop) { return scoped(obj[prop], acc.concat( [prop])); });
     })(ref || store);
   };
-} // BUG inside _forDeep
-// DEEP merge utility.
+} // DEEP merge utility.
 // Simply iterating and setting.
-// function _merge(ref) {
-//   console.log(ref);
-//   this._forDeep('', true)((path, value) => {
-//     console.log(path, value);
-//   }, ref);
-// }
 
+
+function _merge(ref) {
+  var this$1 = this;
+
+  this._forDeep('', true)(function (path, value) { return this$1._set(path, value); }, ref);
+}
 
 function _size(path) {
   var store = this.storeSelect(path);
@@ -197,8 +197,8 @@ var _methods = {
   _size: _size,
   _sizeDeep: _sizeDeep,
   _entries: _entries,
-  _forDeep: _forDeep // _merge,
-
+  _forDeep: _forDeep,
+  _merge: _merge
 };
 
 var Hobj = function Hobj(init) {
