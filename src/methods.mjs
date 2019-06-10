@@ -112,8 +112,11 @@ function _entries(path) {
   return this._keys(path).map(prop => [prop, store[prop]]);
 }
 
-function _clear() {
-  this.store = {};
+// Clear store or method queue
+function _clear(when, method) {
+  if (!when && !method) return this.store = {};
+
+  this[`${when}Q`].set(method, []);
 }
 
 export default {

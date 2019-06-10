@@ -182,10 +182,12 @@ function _keys(path) {
 function _entries(path) {
   var store = this.storeSelect(path);
   return this._keys(path).map(function (prop) { return [prop, store[prop]]; });
-}
+} // Clear store or method queue
 
-function _clear() {
-  this.store = {};
+
+function _clear(when, method) {
+  if (!when && !method) { return this.store = {}; }
+  this[(when + "Q")].set(method, []);
 }
 
 var _methods = {

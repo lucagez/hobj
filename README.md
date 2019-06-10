@@ -490,10 +490,10 @@ Created at the specified deepness.
 ## clear / _clear
 
 ```bash
-obj.clear()
+obj.clear(when, method)
 ```
-Clear the store => initialize it to empty object.
-`.clear` does not accepts any argument.
+If invoked with no params => initialize store to empty object.
+If invoked with params => clear queue.
 
 **RETURNS:** `undefined`
 
