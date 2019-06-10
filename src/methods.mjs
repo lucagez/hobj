@@ -59,7 +59,7 @@ function _for(path) {
 
 function _forDeep(path = '', end = true) {
   const store = this.storeSelect(path);
-  return (func) => {
+  return (func, ref) => {
     if (typeof func !== 'function') throw new TypeError('Func must be a function');
 
     (function scoped(obj, acc = []) {
@@ -79,9 +79,19 @@ function _forDeep(path = '', end = true) {
       return Object
         .keys(obj)
         .map(prop => scoped(obj[prop], [...acc, prop]));
-    }(store));
+    }(ref || store));
   };
 }
+
+// BUG inside _forDeep
+// DEEP merge utility.
+// Simply iterating and setting.
+// function _merge(ref) {
+//   console.log(ref);
+//   this._forDeep('', true)((path, value) => {
+//     console.log(path, value);
+//   }, ref);
+// }
 
 function _size(path) {
   const store = this.storeSelect(path);
@@ -121,4 +131,5 @@ export default {
   _sizeDeep,
   _entries,
   _forDeep,
+  // _merge,
 };

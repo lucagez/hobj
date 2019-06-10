@@ -124,7 +124,7 @@ function _forDeep(path, end) {
   if ( end === void 0 ) end = true;
 
   var store = this.storeSelect(path);
-  return function (func) {
+  return function (func, ref) {
     if (typeof func !== 'function') { throw new TypeError('Func must be a function'); }
 
     (function scoped(obj, acc) {
@@ -143,9 +143,18 @@ function _forDeep(path, end) {
 
 
       return Object.keys(obj).map(function (prop) { return scoped(obj[prop], acc.concat( [prop])); });
-    })(store);
+    })(ref || store);
   };
-}
+} // BUG inside _forDeep
+// DEEP merge utility.
+// Simply iterating and setting.
+// function _merge(ref) {
+//   console.log(ref);
+//   this._forDeep('', true)((path, value) => {
+//     console.log(path, value);
+//   }, ref);
+// }
+
 
 function _size(path) {
   var store = this.storeSelect(path);
@@ -188,7 +197,8 @@ var _methods = {
   _size: _size,
   _sizeDeep: _sizeDeep,
   _entries: _entries,
-  _forDeep: _forDeep
+  _forDeep: _forDeep // _merge,
+
 };
 
 var Hobj = function Hobj(init) {
