@@ -86,8 +86,9 @@ function _forDeep(path = '', end = true) {
 
 // DEEP merge utility.
 // Simply iterating and setting.
-function _merge(ref) {
+function _merge(ref = {}) {
   this._forDeep('', true)((path, value) => this._set(path, value), ref);
+  return this.store;
 }
 
 function _size(path) {

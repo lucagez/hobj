@@ -157,8 +157,11 @@
 
   function _merge(ref) {
     var this$1 = this;
+    if ( ref === void 0 ) ref = {};
 
     this._forDeep('', true)(function (path, value) { return this$1._set(path, value); }, ref);
+
+    return this.store;
   }
 
   function _size(path) {

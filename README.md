@@ -6,7 +6,7 @@
 - `get/set/has/delete` with nested path support.
 - deep iteration.
 - deep clone.
-- deep property count.
+- deep merge.
 - Everything while keeping direct access to original js object (no constrains on using `Hobj` API for every operation).
 
 # Installation
@@ -444,6 +444,19 @@ The `end` param will define if the number should take into account properties th
 |-------|---------|-----------|----------|
 | path  | string  | ''        | no       |
 | end   | boolean | true      | no       |
+
+## merge / _merge
+
+```bash
+obj.merge(obj)
+```
+(Deeply) merge the provided object with the current store.
+
+**RETURNS:** `store`
+
+| param | type    | default   | required |
+|-------|---------|-----------|----------|
+| obj   | object  | {}        | no       |
 
 
 ## keys / _keys
