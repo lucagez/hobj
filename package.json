@@ -1,6 +1,6 @@
 {
   "name": "hobj",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Handy object manipulation tools",
   "main": "dist/hobj.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "lint:fix": "eslint --fix src/**",
     "test": "ava test/**"
   },
-  "keywords": ["object manipulation", "dot prop", "nested properties", "dot notation", "hooks", "object", "nested", "path"],
+  "keywords": ["util", "stdlib", "object manipulation", "dot prop", "nested properties", "dot notation", "hooks", "object", "nested", "path"],
   "author": "Luca Gesmundo <lucagesmundo@yahoo.it>",
   "license": "MIT",
   "devDependencies": {
