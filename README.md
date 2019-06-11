@@ -1,6 +1,12 @@
 # Hobj
 > 🔪 Handy object manipulation tools
 
+<p>
+  <a href="https://travis-ci.org/lucagez/hobj"><img src="https://travis-ci.org/lucagez/hobj.svg?branch=master" alt="travis"></a>
+  <a href="https://www.npmjs.org/package/hobj"><img src="https://img.shields.io/npm/v/hobj.svg?style=flat" alt="npm"></a>
+  <img src="https://img.shields.io/badge/license-MIT-f1c40f.svg" alt="MIT">
+</p>
+
 # Features
 - `before/after` hooks on each method.
 - `get/set/has/delete` with nested path support.
