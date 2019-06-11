@@ -15,6 +15,34 @@
 - deep merge.
 - Everything while keeping direct access to original js object (no constrains on using `Hobj` API for every operation).
 
+# TOC
+ 
+ - [Installation](#installation)
+ - [How hooks work](#how-hooks-work)
+ - [Usage](#usage)
+   - [Init Hobj](#init-hobj)
+   - [Store](#store)
+   - [Paths](#paths)
+   - [Calling a method](#calling-a-method)
+   - [Defining hooks](#defining-hooks)
+ - [METHODS](#methods)
+   - [store](#store)
+   - [has / _has](#has--has)
+   - [get / _get](#get--get)
+   - [set / _set](#set--set)
+   - [delete / _delete](#delete--delete)
+   - [sub / _sub](#sub--sub)
+   - [for / _for](#for--for)
+   - [forDeep / _forDeep](#fordeep--fordeep)
+   - [size / _size](#size--size)
+   - [sizeDeep / _sizeDeep](#sizedeep--sizedeep)
+   - [merge / _merge](#merge--merge)
+   - [keys / _keys](#keys--keys)
+   - [entries / _entries](#entries--entries)
+   - [clear / _clear](#clear--clear)
+ - [License](#license)
+ 
+ 
 # Installation
 
 With NPM:
@@ -101,8 +129,8 @@ obj.set('a.b.c', 'd'); // { a: { b: { c: 'd' } } }
 ## Calling a method
 
 For each `Hobj` method there are two variations:
-- Normal => obj.[method] => ALWAYS executes before/after hooks.
-- Pure => obj.[_method] => Pure method. No hooks.
+- Normal => ```obj.[method]``` => ALWAYS executes before/after hooks.
+- Pure => ```obj.[_method]``` => Pure method. No hooks.
 
 **NOTE:** Normal methods can be used also if hooks are not defined.
 
